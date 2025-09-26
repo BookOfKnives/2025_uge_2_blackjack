@@ -1,6 +1,4 @@
 import random
-from tkinter import *
-from tkinter import ttk
 
 class Card:
     """Card class, has suit & value."""

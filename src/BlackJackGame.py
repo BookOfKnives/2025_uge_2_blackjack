@@ -21,6 +21,7 @@ class Deck:
         return self.cards.pop()
 
 class Hand:
+    """Takes a number of cards, & calculates their Blackjack value."""
     def __init__(self):
         self.cards = []
 
@@ -50,14 +51,15 @@ class Hand:
         return value
             
 class Bet:
+    """Has the amount of money a player has bet."""
     def __init__(self):
         self.value = self.initial_bet()
     
     def initial_bet(self):
         
-        player_bet = int(input("Please place starting bet now."))
+        player_bet = int(input("Please place your bet now, sum from 1 and up."))
         if player_bet <= 0:
-            print("INvalid bet, please bet some money")
+            print("Invalid bet, please bet some money")
         return player_bet
     
     def __str__(self):
@@ -67,6 +69,7 @@ class Bet:
         
         
 class BlackJack():
+    """Game execution class, calls bets, decks and player."""
     def __init__(self):
         self.deck = Deck()
         self.player_hand = Hand()
@@ -94,54 +97,45 @@ class BlackJack():
     def begin_asking_player_for_moves(self):
         print("Starting game.")
         bet = prompt_player_for_bet()
-    # prompt the player for input
     def prompt_player(self):
-        print("Please choose to Hit or Stand")
-        # print("Your bet:", self.player_current_bet.__str__())
-        # print("your cards:", self.player_hand.cards)
+        print("Please choose to Hit or Stand (use 'h' for hit and 's' for stand).")
         self.print_player_current_state()
         choice = input("please choose now")
         if choice not in ['s', 'S', 'h', 'H']:
-            print("Invalid input, please choose Hit or Stay!")
+            print("Invalid input, please choose Hit or Stand!")
         
         elif choice in ['h', 'H']:
             print("Hitting ...")
             self.player_hand.add_card(self.deck.deal_card())
-            self.print_player_current_state()
             if self.player_hand.calculate_value() >= 22:
-                print("inside elif of prompt_player, YOU LOST")
-                self.print_player_current_state() #tjek at spiller ikke har tabt ved at hitte.
+                print("Your hand value is", self.player_hand.calculate_value(), ", that's more than 21!")
+                print(self.determine_winner())
             elif self.player_hand.calculate_value() == 21:
-                print("inside prompt_player, player hand == 21, BLAKJACK")
+                print("Your hand value is 21, that's a BLAKJACK! No better hand possible, automatic stand.")
             else:
                 self.prompt_player()
-            # tjek player value hand imod 21
-            # hvis 21 eller over, gå til dealer-vinder-afslutning
-            #hvis IKKE over, lad spiller blive i input loop,
         elif choice in ['s', 'S']:
-            print("standing")
+            print("Player chose to stand.")
             self.print_player_current_state()
             self.start_dealer_turn()
         
     def start_dealer_turn(self):
-        print("starting dealers turn")
+        print("Starting dealer's turn")
         while self.dealer_hand.calculate_value() < 17:
-            print("inside start dealer turn of while")
+            print("Dealer hitting card ...")
             self.dealer_hand.add_card(self.deck.deal_card())
-            print("dealer val:", self.dealer_hand.calculate_value())
-        print("dealers cards:", self.dealer_hand.cards)
-        print("dealer value:", self.dealer_hand.calculate_value())
         print(self.determine_winner())    
-        # if self.dealer_hand.calculate_value() >= 22:
-        #     print("dealer lost, hand above 22", self.dealer_hand.calculate_value())
-        # elif self.dealer_hand.calculate_value() == 21:
-        #     print("dealer has blackjack")
 
 
     def determine_winner(self):
-        print("inside determiner winner")
+        print("Determining winner by hand value ...")
         player_value = self.player_hand.calculate_value()
         dealer_value = self.dealer_hand.calculate_value()
+
+        print("Dealer's final hand:", self.dealer_hand.cards)
+        print("Dealer's hand's value:", self.dealer_hand.calculate_value())
+        print("Player's final hand:", self.player_hand.cards)
+        print("Player's hand's value:", self.player_hand.calculate_value())
 
         if player_value > 21:
             return "Dealer Wins (Player Bust)"
@@ -154,36 +148,7 @@ class BlackJack():
         else:
             return "It's a tie!"
 
-
-class Gui:
-    def __init__(self, root):
-        self.root = root
-        self.game = BlackJack()
-
-        #setup
-        self.root.title("Blackjack")
-        self.label = 
-
 if __name__ == "__main__":
-    #what i realy need here is a class that is agui which clals the other tihngs
-    #right here
-
     game = BlackJack()
     game.initial_deal()
-    #should have a function here that starts the game asking itself
-    game.prompt_player()#this call to prompt should be at the end.
-    root = Tk()
-    Gui(root)
-
-root.mainloop()
-
-#trey creating a butto here that just does some things.
-
-# start game 
-# shuffle deck 
-# player bets 
-# deal cards -- spiller får to 
-# dealer for 1 synligt og et usynligt kort
-# vil sppiller stå eller gå?
-# indtil spiller står eller er >21, tjek igen
-#
+    game.prompt_player()
